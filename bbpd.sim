@@ -1,0 +1,123 @@
+*  Generated for: PrimeSim
+*  Design library name: BBPD
+*  Design cell name: BBPD_tb
+*  Design view name: schematic
+.lib 'saed32nm.lib' TT
+
+*Custom Compiler Version S-2021.09
+*Fri Feb 25 10:08:52 2022
+
+.global gnd!
+********************************************************************************
+* Library          : BBPD
+* Cell             : Dflipflop
+* View             : schematic
+* View Search List : hspice hspiceD schematic spice veriloga
+* View Stop List   : hspice hspiceD
+********************************************************************************
+.subckt dflipflop clk d gnd_1 q vdd
+xm6 net29 clk net25 gnd_1 p105 w=0.1u l=0.03u nf=1 m=1
+xm3 q net58 vdd vdd p105 w=0.1u l=0.03u nf=1 m=1
+xm2 net58 net48 vdd vdd p105 w=0.1u l=0.03u nf=1 m=1
+xm1 net48 clk vdd vdd p105 w=0.1u l=0.03u nf=1 m=1
+xm0 net25 d vdd vdd p105 w=0.1u l=0.03u nf=1 m=1
+xm12 q net58 gnd_1 gnd_1 n105 w=0.1u l=0.03u nf=1 m=1
+xm11 net45 net48 gnd_1 gnd_1 n105 w=0.1u l=0.03u nf=1 m=1
+xm10 net58 clk net45 gnd_1 n105 w=0.1u l=0.03u nf=1 m=1
+xm9 net37 clk gnd_1 gnd_1 n105 w=0.1u l=0.03u nf=1 m=1
+xm8 net48 net29 net37 gnd_1 n105 w=0.1u l=0.03u nf=1 m=1
+xm7 net29 d gnd_1 gnd_1 n105 w=0.1u l=0.03u nf=1 m=1
+.ends dflipflop
+
+********************************************************************************
+* Library          : BBPD
+* Cell             : inverter
+* View             : schematic
+* View Search List : hspice hspiceD schematic spice veriloga
+* View Stop List   : hspice hspiceD
+********************************************************************************
+.subckt inverter gnd_1 in out vdd
+xm1 out in gnd_1 gnd_1 n105 w=0.1u l=0.03u nf=1 m=1
+xm2 out in vdd vdd p105 w=0.1u l=0.03u nf=1 m=1
+.ends inverter
+
+********************************************************************************
+* Library          : BBPD
+* Cell             : 2_xor
+* View             : schematic
+* View Search List : hspice hspiceD schematic spice veriloga
+* View Stop List   : hspice hspiceD
+********************************************************************************
+.subckt _2_xor a b gnd_1 out vdd
+xm3 out b net13 vdd p105 w=0.1u l=0.03u nf=1 m=1
+xm2 net13 net20 vdd vdd p105 w=0.1u l=0.03u nf=1 m=1
+xm1 out net28 net5 vdd p105 w=0.1u l=0.03u nf=1 m=1
+xm0 net5 a vdd vdd p105 w=0.1u l=0.03u nf=1 m=1
+xm7 net29 b gnd_1 gnd_1 n105 w=0.1u l=0.03u nf=1 m=1
+xm6 net25 net28 gnd_1 gnd_1 n105 w=0.1u l=0.03u nf=1 m=1
+xm5 out a net29 gnd_1 n105 w=0.1u l=0.03u nf=1 m=1
+xm4 out net20 net25 gnd_1 n105 w=0.1u l=0.03u nf=1 m=1
+xi10 gnd_1 b net28 vdd inverter
+xi9 gnd_1 a net20 vdd inverter
+.ends _2_xor
+
+********************************************************************************
+* Library          : BBPD
+* Cell             : BBPD
+* View             : schematic
+* View Search List : hspice hspiceD schematic spice veriloga
+* View Stop List   : hspice hspiceD
+********************************************************************************
+.subckt bbpd div down gnd_1 q1 q2 q3 q4 ref up vdd
+xi3 div q3 gnd_1 q4 vdd dflipflop
+xi2 net36 ref gnd_1 q3 vdd dflipflop
+xi1 div q1 gnd_1 q2 vdd dflipflop
+xi0 div ref gnd_1 q1 vdd dflipflop
+xi5 q2 q4 gnd_1 down vdd _2_xor
+xi4 q4 q1 gnd_1 up vdd _2_xor
+xi6 gnd_1 div net36 vdd inverter
+c12 q1 gnd_1 c=5f ic=0
+.ends bbpd
+
+********************************************************************************
+* Library          : BBPD
+* Cell             : BBPD_tb
+* View             : schematic
+* View Search List : hspice hspiceD schematic spice veriloga
+* View Stop List   : hspice hspiceD
+********************************************************************************
+xi0 div down gnd! q1 q2 q3 q4 ref up net15 bbpd
+v1 div gnd! dc=0 pulse ( 1.2 0 0 10p 10p 5n 10n )
+v3 net15 gnd! dc=1.2
+v5 ref gnd! dc=0 pwl ( 0 0.0 7.5n 0.0 7.6n 1.2 17.5n 1.2 17.6n 0.0 50n 0.0 td=0
++ )
+
+
+
+
+
+
+
+
+.tran '0.01n' '50n' name=tran
+
+.option primesim_remove_probe_prefix = 0
+.probe v(*) i(*) level=1
+.probe tran v(div) v(down) v(q1) v(q2) v(q3) v(q4) v(ref) v(up)
+
+.temp 25
+
+
+
+.option primesim_output=wdf
+
+
+.option parhier = LOCAL
+
+
+
+
+
+
+.end
+
