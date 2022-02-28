@@ -103,7 +103,7 @@ The input clock signal leads the data signal which makes the output signal UP to
 
 ### Clock lags data
 
-The input clock signal lags the data signal which makes the output signal UP to go high and the DOWN to go low as shown in fig.8
+The input clock signal lags the data signal which makes the output signal UP to go low and the DOWN to go high as shown in fig.8
 <p align = "center">
 <img src = "Images/lag.png"></br>
     Fig.8 : Output waveforms of Alexander phase detector when the input clock signal leads the clock signals.
